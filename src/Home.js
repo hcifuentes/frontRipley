@@ -34,15 +34,17 @@ class Home extends Component {
         const { endpoint } = this.state;
         const socket = socketIOClient(endpoint);
         socket.on('pop', (data) => {
-            console.log(data._code, data._temp, data._tz)
-            this.updateCities(data);
+            this.updateCity(data);
         });
     }
 
     getActualData() {
-        fetch('http://localhost:3000/')
+        fetch('http://localhost:3000/all')
 	    .then((response) => {
-    	    console.log(response);
+            console.log(response.body);
+            for(const city of response.body) {
+                this.updateCity(city);
+            }
         })
         .then((recurso) => {
     	    console.log(recurso)
@@ -59,7 +61,7 @@ class Home extends Component {
         })
     }
 
-    updateCities(nuevaData) {
+    updateCity(nuevaData) {
         const array = this.state.cities;
         console.log(array);
         var existe = false;
