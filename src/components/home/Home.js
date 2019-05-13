@@ -2,17 +2,20 @@ import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
 import CityComponent  from '../city/City';
 
+const SERVER = "http://ec2-18-144-47-113.us-west-1.compute.amazonaws.com"; // http:localhost // funcionamiento local
+const WEBSOCKETPORT = ":3001";
+const WEBSERVICESPORT = ":3000";
 
 class Home extends Component {
     constructor() {
         super();
         this.state = {
             response: true,
-            endpoint: "http://127.0.0.1:3001",
+            endpointSocket: SERVER + WEBSOCKETPORT,
+            endpointServices: SERVER + WEBSERVICESPORT,
             cities: [],
             timer : null
         };
-        
     }
 
     componentDidMount() {
@@ -24,13 +27,13 @@ class Home extends Component {
     setTimer() {
         var timer = setInterval(() => {
             this.reloadData();
-        }, 30000);
+        }, 10000);
         this.setState({timer: timer});
     }
 
     connectSocket() {
-        const { endpoint } = this.state;
-        const socket = socketIOClient(endpoint);
+        const { endpointSocket } = this.state;
+        const socket = socketIOClient(endpointSocket);
         socket.on('pop', (data) => {
             console.log(data);
             this.updateCity(data);
@@ -38,7 +41,8 @@ class Home extends Component {
     }
 
     getActualData() {
-        fetch('http://localhost:3000/all')
+        const { endpointServices } = this.state;
+        fetch(endpointServices + '/all')
 	    .then(response => response.json())
         .then(json => {
             var cities = json.data;
@@ -49,7 +53,8 @@ class Home extends Component {
     }
 
     reloadData() {
-        fetch('http://localhost:3000/reload')
+        const { endpointServices } = this.state;
+        fetch(endpointServices + '/reload')
 	    .then(response => response.json())
         .then(json => {
     	    console.log(json);

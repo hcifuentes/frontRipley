@@ -37,8 +37,7 @@ class CityComponent extends React.Component {
     const utc = new Date(browserMilis + (browserTz * 60 * 1000));
     const actualDate = new Date(new Date(utc.getTime() + tz * 60 * 60 * 1000));
     return (actualDate.getHours() < 10 ? '0' + actualDate.getHours() : actualDate.getHours()) + ':'+
-           (actualDate.getMinutes() < 10 ? '0' + actualDate.getMinutes() : actualDate.getMinutes())
-           + ' ' + tz
+           (actualDate.getMinutes() < 10 ? '0' + actualDate.getMinutes() : actualDate.getMinutes());
   }
 
   temperatures(temp) {
