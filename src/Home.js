@@ -13,10 +13,6 @@ class Home extends Component {
         
     }
 
-    
-
-
-
     componentDidMount() {
         this.setTimer();
         this.connectSocket();
@@ -26,7 +22,7 @@ class Home extends Component {
     setTimer() {
         var timer = setInterval(() => {
             this.reloadData();
-        }, 10000);
+        }, 30000);
         this.setState({timer: timer});
     }
 
@@ -34,27 +30,27 @@ class Home extends Component {
         const { endpoint } = this.state;
         const socket = socketIOClient(endpoint);
         socket.on('pop', (data) => {
+            console.log(data);
             this.updateCity(data);
         });
     }
 
     getActualData() {
         fetch('http://localhost:3000/all')
-	    .then((response) => {
-            console.log(response.body);
-            for(const city of response.body) {
-                this.updateCity(city);
+	    .then(response => response.json())
+        .then(json => {
+            var cities = json.data;
+            for(const city in cities) {
+                this.updateCity(cities[city]);
             }
-        })
-        .then((recurso) => {
-    	    console.log(recurso)
-        })
+        });
     }
 
     reloadData() {
         fetch('http://localhost:3000/reload')
-	    .then((response) => {
-    	    console.log(response);
+	    .then(response => response.json())
+        .then(json => {
+    	    console.log(json);
         })
         .then((recurso) => {
     	    console.log(recurso)
@@ -63,22 +59,20 @@ class Home extends Component {
 
     updateCity(nuevaData) {
         const array = this.state.cities;
-        console.log(array);
         var existe = false;
+
         array.map(function (dataPrev) {
-            console.log(dataPrev._code, nuevaData._code, dataPrev._code === nuevaData._code)
             if (dataPrev._code === nuevaData._code) {
                 dataPrev._tz = nuevaData._tz;
                 dataPrev._temp = nuevaData._temp;
                 dataPrev._horaActual = this.getHoraActual(nuevaData._tz)
                 existe = true;
             }
-
             return dataPrev;
         });
 
         if(!existe) {
-            array.push(nuevaData);
+            array.push(JSON.parse(nuevaData));
         }
         
         this.setState({
