@@ -22,7 +22,7 @@ class Home extends Component {
     setTimer() {
         var timer = setInterval(() => {
             this.reloadData();
-        }, 30000);
+        }, 10000);
         this.setState({timer: timer});
     }
 
@@ -65,7 +65,6 @@ class Home extends Component {
             if (dataPrev._code === nuevaData._code) {
                 dataPrev._tz = nuevaData._tz;
                 dataPrev._temp = nuevaData._temp;
-                dataPrev._horaActual = this.getHoraActual(nuevaData._tz)
                 existe = true;
             }
             return dataPrev;
