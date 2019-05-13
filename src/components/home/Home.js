@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
+import CityComponent  from '../city/City';
+
 
 class Home extends Component {
     constructor() {
@@ -22,7 +24,7 @@ class Home extends Component {
     setTimer() {
         var timer = setInterval(() => {
             this.reloadData();
-        }, 10000);
+        }, 30000);
         this.setState({timer: timer});
     }
 
@@ -92,7 +94,8 @@ class Home extends Component {
             <div>
                 {cities.map(function (d, idx) {
                     return (
-                        <li key={idx}>{d._name} , {d._temp} , {d._tz}, {d._horaActual}</li>)
+                        <CityComponent key={idx} city={d}/>
+                    )
                 })}
             </div>
         );
